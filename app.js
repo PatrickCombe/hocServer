@@ -58,13 +58,20 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  models.User.findById(id, done);
+  console.log('des',id)
+  models.User.findById(id, function(err, user) {
+    console.log('err', err);
+    console.log('user', user);
+    done(err, user);
+  });
 });
 
 // passport strategy
 passport.use(new LocalStrategy(function(username, password, done) {
   // Find the user with the given username
+  console.log('localstrategy', username, password);
   models.User.findOne({ username: username }, function (err, user) {
+    console.log('findOne', err, user);
     // if there's an error, finish trying to authenticate (auth failed)
     if (err) {
       console.error('Error fetching user in LocalStrategy', err);
@@ -72,13 +79,16 @@ passport.use(new LocalStrategy(function(username, password, done) {
     }
     // if no user present, auth failed
     if (!user) {
-      return done(null, false, { message: 'Incorrect username.' });
+      console.log('incorrect username', username)
+;      return done(null, false, { message: 'Incorrect username.' });
     }
     // if passwords do not match, auth failed
     if (user.password !== password) {
+      console.log('incorrect password', user.password, password)
       return done(null, false, { message: 'Incorrect password.' });
     }
     // auth has has succeeded
+    console.log('logged in!', user);
     return done(null, user);
   });
 }
@@ -118,7 +128,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var port = process.env.PORT || 3000;
+var port =  3000;
 app.listen(port);
 console.log('Express started. Listening on port %s', port);
 
