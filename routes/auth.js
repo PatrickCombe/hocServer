@@ -40,8 +40,12 @@ module.exports = function(passport) {
   // POST Login page
   router.post('/login', passport.authenticate('local',{
     successRedirect: '/protected',
-    failureRedirect: '/login'
+    failureRedirect: '/badlogin'
   }));
+
+  router.get('/badlogin', function(req, res) {
+    res.status(400).send('Bad login')
+  });
 
   // GET Logout page
   router.get('/logout', function(req, res) {

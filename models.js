@@ -17,6 +17,9 @@ var documentSchema = mongoose.Schema({
   authors: [{type: mongoose.Schema.ObjectId,
     ref:'User'
   }],
+  title: String,
+  content:{},
+  contentHistory:[],
   created: Date,
   content: String,
   password: String,
