@@ -18,8 +18,8 @@ var documentSchema = mongoose.Schema({
     ref:'User'
   }],
   title: String,
-  content:{},
   contentHistory:[],
+  saveDates:[],
   created: Date,
   content: String,
   password: String,

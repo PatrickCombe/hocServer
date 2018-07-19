@@ -1,3 +1,4 @@
+var http = require('http');
 var express = require('express');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
@@ -9,6 +10,26 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var mongoose = require('mongoose');
 var connect = process.env.MONGODB_URI;
+
+
+var socketIO = require  ('socket.io');
+var document = require( './socket/document.js');
+
+const app = express()
+const server = http.Server(app)
+const io = socketIO(server)
+
+io.on('connection', function(socket) {
+  document(socket)
+})
+
+
+
+
+
+
+
+
 
 var REQUIRED_ENV = "SECRET MONGODB_URI".split(" ");
 
@@ -26,7 +47,6 @@ var models = require('./models');
 
 var routes = require('./routes/routes');
 var auth = require('./routes/auth');
-var app = express();
 
 // view engine setup
 var hbs = require('express-handlebars')({
@@ -129,7 +149,7 @@ app.use(function(err, req, res, next) {
 });
 
 var port =  3000;
-app.listen(port);
+server.listen(port);
 console.log('Express started. Listening on port %s', port);
 
 module.exports = app;

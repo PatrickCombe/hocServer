@@ -55,10 +55,11 @@ router.post('/createdoc', function(req, res, next) {
   var d = new models.Document({
     owner:req.user._id,
     title: req.body.title,
-    authors:req.user._id,
     created: new Date(),
+    authors:req.user._id,
     password: req.body.password
   });
+  d.saveDates.push(new Date())
   d.save(function(err, user) {
     if (err) {
       console.log(err);
@@ -103,17 +104,23 @@ router.post('/adddoc', function(req, res, next) {
 
 //FInd document with DOC ID AND THEN UPDATE THE CONTENT
 router.post('/savedoc', function(req, res, next) {
-  models.Document.findByIdAndUpdate(req.body.id, function(error,result){
-    if(error){}else{
-
-    }
-  })
-
-
+    console.log('line 106', req.body);
+    models.Document.findById(req.body.documentID)
+        .then((result)=>{
+          console.log(result);
+          if(result) console.log(result.contentHistory);
+          result.contentHistory.push(req.body.editorState);
+          result.saveDates.push(new Date());
+///CHECK THIS
+          return result.save()
+        })
+        .then(()=>res.json({success: true, data: null}))
+        .catch((error)=>(res.send(error)))
 })
 
-router.get('/specificdoc', function(req, res, next) {
-  models.Document.findById(req.body.id, function(error,result){
+router.post('/specificdoc', function(req, res, next) {
+  console.log(req.body)
+  models.Document.findById(req.body.documentID, function(error,result){
     if(error){
       res.json({success:false, data:null})
     }else{
@@ -123,6 +130,8 @@ res.json({success:true, data:result})
 
 
 })
+
+
 
 
 
