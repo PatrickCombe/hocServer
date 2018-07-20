@@ -59,7 +59,6 @@ router.post('/createdoc', function(req, res, next) {
     authors:req.user._id,
     password: req.body.password
   });
-  d.saveDates.push(new Date())
   d.save(function(err, user) {
     if (err) {
       console.log(err);
