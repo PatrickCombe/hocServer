@@ -87,10 +87,13 @@ router.post('/adddoc', function(req, res, next) {
   models.Document.findById(req.body.documentID)
       .then((result)=>{
         console.log(result)
-        result.authors.push(req.user._id);
-        return result
+
+        var newArr=result.authors.slice();
+        newArr.push(req.user._id);
+        //result.authors.push(req.user._id);
+        result.authors=newArr;
+        return result.save()
       })
-      .then((result)=>result.save())
       .then(()=>res.json({success: true, data: null}))
       .catch((error)=>(res.send(error)))
 
@@ -103,17 +106,17 @@ router.post('/adddoc', function(req, res, next) {
 
 //FInd document with DOC ID AND THEN UPDATE THE CONTENT
 router.post('/savedoc', function(req, res, next) {
-    console.log('line 106', req.body);
+    //console.log('line 106', req.body);
     models.Document.findById(req.body.documentID)
         .then((result)=>{
-          console.log(result);
+          //console.log(result);
           if(result) console.log(result.contentHistory);
           result.contentHistory.push(req.body.editorState);
           result.saveDates.push(new Date());
 ///CHECK THIS
           return result.save()
         })
-        .then(()=>res.json({success: true, data: null}))
+        .then(()=>res.json({success: true, data: result.contentHistory}))
         .catch((error)=>(res.send(error)))
 })
 
